@@ -16,7 +16,7 @@ var start = 105;
 var finish = 700;
 
 //Fuel Values
-var startFuel = 702;
+var startFuel = randomRange(702, 100);
 var fuel = startFuel;
 
 var barFullWidth = 300;
@@ -28,6 +28,21 @@ var frames = fps;
 
 //create instance of class
 var car = new Car();
+car.w = 100;
+car.h = 45;
+car.y = 400;
+car.color = "green"
+
+var car2 = new Car();
+car2.w = 75;
+car2.h = 60;
+car2.y = 300;
+
+var car3 = new Car();
+car3.w = 100;
+car3.h = 100;
+car3.y = 150;
+
 
 
 
@@ -37,7 +52,7 @@ function draw() {
     //clear the screen
     ctx.clearRect(0, 0, c.width, c.height);
     
-    console.log(car.x);
+
 
     //draws text
     ctx.fillStyle = 'blue';
@@ -53,10 +68,21 @@ function draw() {
     drawBox('blue', start, 100, 10, 400);
     //drawFinishLine();
     drawBox('orange', finish, 100, 10, 400);
-    drawCar();
-    drawSprite();
+    //drawCar();
+    //drawSprite();
     drawFuelBar();
     drawFuelText();
+
+    
+    car.x = x;
+    car.draw();
+
+    car2.x = x;
+    car2.draw();
+
+    car3.x = x;
+    car3.drawSprite();
+
 
     //updating x
      if(sec > 0){
