@@ -9,6 +9,20 @@ var score = 0;
 var gameStates = [];
 var currentState = 0;
 var ship;
+var highScore = 0;
+var mainBGImage = new Image();
+mainBGImage.src = "images/rocks.jpg";
+var cookieSprite = new Image();
+cookieSprite.src = "images/cookie.png";
+
+//onload event that listens for when the image is loaded
+mainBGImage.onload = function(){
+    main();
+}
+
+cookieSprite.onload = function(){
+    main();
+}
 
 
 
@@ -29,7 +43,13 @@ function Asteroid(){
         context.save();
         context.beginPath();
         context.fillStyle = this.color;
-        context.arc(this.x,this.y,this.radius,0,2*Math.PI,true);
+       // context.arc(this.x,this.y,this.radius,0,2*Math.PI,true);
+        context.drawImage(
+                cookieSprite, 
+                this.x - this.radius,
+                this.y-this.radius,
+                this.radius * 2,
+                this.radius * 2);
         context.closePath();
         context.fill();
         context.restore();
@@ -146,19 +166,21 @@ function keyPressDown(e){
             
 
             if (currentState == 2) {
+                currentState = 0;
                 score = 0;
                 numAsteroids = 10;
                 asteroids = [];
                 gameStart();
+                main();
                 
-                currentState = 0;
 
             }
             else {
                 gameStart();
                 gameOver = false;
                 currentState = 1;
-                setTimeout(scoreTimer, 1000);
+                main();
+                scoreTimer();
             }
         }
     }
@@ -184,6 +206,7 @@ function keyPressUp(e){
 //Game States for menus and gameplay
 gameStates[0] = function(){
     context.save();
+    context.drawImage(mainBGImage, 0,0,c.width,c.height);
     context.font = "30px Arial";
     context.fillStyle = "white";
     context.textAlign = "center";
@@ -258,15 +281,33 @@ gameStates[1] = function(){
     }
 }
 
-gameStates[2] = function(){
-    context.save();
-    context.font = "30px Arial";
-    context.fillStyle = "white";
-    context.textAlign = "center";
-    context.fillText("Game Over Your score was : " + score.toString() ,c.width/2,c.height/2 - 30);
-    context.font = "15px Arial";
-    context.fillText("Press Enter to Play Again", c.width/2,c.height/2 + 20);
-    context.restore();
+gameStates[2] = function () {
+    if (score > highScore) {
+        //set the high
+        highScore = score;
+        context.save();
+        context.font = "30px Arial";
+        context.fillStyle = "white";
+        context.textAlign = "center";
+        context.fillText("Game Over Your score was : " + score.toString(), c.width / 2, c.height / 2 - 60);
+        context.fillText("Your New High Score is : " + highScore.toString(), c.width / 2, c.height / 2 - 30);
+        context.fillText("New Record", c.width / 2, c.height / 2);
+        context.font = "15px Arial";
+        context.fillText("Press Enter to Play Again", c.width / 2, c.height / 2 + 20);
+        context.restore();
+    }
+    else {
+        context.save();
+        context.font = "30px Arial";
+        context.fillStyle = "white";
+        context.textAlign = "center";
+        context.fillText("Game Over Your score was : " + score.toString(), c.width / 2, c.height / 2 - 60);
+        context.fillText("Your high score is : " + highScore.toString(), c.width / 2, c.height / 2 - 30);
+        context.font = "15px Arial";
+        context.fillText("Press Enter to Play Again", c.width / 2, c.height / 2 + 20);
+        context.restore();
+    }
+
 }
 
 
@@ -276,8 +317,10 @@ function main(){
     /*
         this is where our original game code was
     */
+    if(gameOver == false){
+        timer = requestAnimationFrame(main);
+    }
     gameStates[currentState]();
-    timer = requestAnimationFrame(main);
 }
 
 function scoreTimer(){
